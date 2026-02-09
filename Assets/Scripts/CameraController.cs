@@ -82,14 +82,23 @@ public class CameraController : MonoBehaviour
     public void moveCamera(PlayerID newPlayer)
     {
         currentPlayer = newPlayer;
-
-        positionVector.position = new Vector3(
+        Vector3 targetPos = new Vector3(
             playerPositions[currentPlayer].xPos,
             playerPositions[currentPlayer].yPos,
             playerPositions[currentPlayer].zPos
         );
+        
+        Vector3 angularVelocity = new Vector3(
+            1, 0, 1
+        );
+        
+        const int radius = 420;
+        
+        while(!checkVectorEquivalency(positionVector.position, targetPos))
+        {
+            
+        }
 
-        Vector3 angularVelocity = new Vector3(0, 100, 0);
         
         Quaternion rotationDifference = new Quaternion(
             angularVelocity.x * Time.fixedDeltaTime,
@@ -99,5 +108,10 @@ public class CameraController : MonoBehaviour
             );
         
         positionVector.MoveRotation(positionVector.rotation * rotationDifference);
+    }
+
+    private bool checkVectorEquivalency(Vector3 v1, Vector3 v2)
+    {
+        return v1.x == v2.x && v1.y == v2.y &&  v1.z == v2.z;
     }
 }
