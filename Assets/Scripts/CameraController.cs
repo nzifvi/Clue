@@ -25,16 +25,8 @@ public class CameraController : MonoBehaviour
         }
     }
     
-    public enum PlayerID {
-        Player1 = 1,
-        Player2,
-        Player3,
-        Player4,
-        Player5,
-        Player6
-    }
-    private Dictionary<PlayerID, CameraMovementPackage> playerPositions = new Dictionary<PlayerID, CameraMovementPackage>();
-    private PlayerID currentPlayer;
+    private Dictionary<GameController.PlayerID, CameraMovementPackage> playerPositions = new Dictionary<GameController.PlayerID, CameraMovementPackage>();
+    private GameController.PlayerID currentPlayer;
     
     private bool isMoving = false;
     
@@ -48,31 +40,31 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         playerPositions.Add(
-            PlayerID.Player1,
-            new CameraMovementPackage(-310, 180, -310, 45, 45, 0)
+            GameController.PlayerID.Player1,
+            new CameraMovementPackage(-310, 180, -310, 25, 227, 0)
         );
         playerPositions.Add(
-            PlayerID.Player2,
-            new CameraMovementPackage(-440, 180, 0, 45, 90, 0)
+            GameController.PlayerID.Player2,
+            new CameraMovementPackage(-440, 180, 0, 25, 185, 0)
         );
         playerPositions.Add(
-            PlayerID.Player3,
-            new CameraMovementPackage(-310, 180, 310, 45, 135, 0)
+            GameController.PlayerID.Player3,
+            new CameraMovementPackage(-310, 180, 310, 25, 135, 0)
         );
         playerPositions.Add(
-            PlayerID.Player4,
-            new CameraMovementPackage(310, 180, 310, 45, 180, 0)
+            GameController.PlayerID.Player4,
+            new CameraMovementPackage(310, 180, 310, 25, 90, 0)
         );
         playerPositions.Add(
-            PlayerID.Player5,
-            new CameraMovementPackage(440, 180, 0, 45, 225, 0)
+            GameController.PlayerID.Player5,
+            new CameraMovementPackage(440, 180, 0, 25, 45, 0)
         );
         playerPositions.Add(
-            PlayerID.Player6,
-            new CameraMovementPackage(310, 180, -310, 45, 270, 0)
+            GameController.PlayerID.Player6,
+            new CameraMovementPackage(310, 180, -310, 25, 5, 0)
         );
         
-        currentPlayer = PlayerID.Player1;
+        currentPlayer = GameController.PlayerID.Player1;
         currentYAngle = playerPositions[currentPlayer].yAngle;
 
         updateCameraPosition();
@@ -82,22 +74,22 @@ public class CameraController : MonoBehaviour
     {
         if (Keyboard.current.digit1Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player1);
+            moveCamera(GameController.PlayerID.Player1);
         }else if (Keyboard.current.digit2Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player2);
+            moveCamera(GameController.PlayerID.Player2);
         }else if (Keyboard.current.digit3Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player3);
+            moveCamera(GameController.PlayerID.Player3);
         }else if (Keyboard.current.digit4Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player4);
+            moveCamera(GameController.PlayerID.Player4);
         }else if (Keyboard.current.digit5Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player5);
+            moveCamera(GameController.PlayerID.Player5);
         }else if (Keyboard.current.digit6Key.wasPressedThisFrame)
         {
-            moveCamera(PlayerID.Player6);
+            moveCamera(GameController.PlayerID.Player6);
         }
 
         if (isMoving)
@@ -127,7 +119,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void moveCamera(PlayerID playerID)
+    public void moveCamera(GameController.PlayerID playerID)
     {
         currentPlayer = playerID;
         isMoving = true;
