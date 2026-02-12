@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Default Local Group
+  m_GUID: c8ef4a1471d50234dbdb33544b93e38b
+  m_SerializeEntries:
+  - m_GUID: 1e20d789d4345704a999d4a6b19d9193
+    m_Address: Assets/Textures/Test/TTTestTile.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22f5e1dc277e6774a89f3d6fb550ee43
+    m_Address: Assets/Textures/Test/TestTile.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 875aa4e8b3161b641a21054fbf5e9caa
+    m_Address: Assets/Textures/Test/WTTestTile.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99129badaed520f44bbe29036478b05e
+    m_Address: Assets/Textures/Test/TestPlayer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 158aa9096c4c61f408a39bb532e16d1e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: fe1e30234a23a754381bc590a5af9f85, type: 2}
+    - {fileID: 11400000, guid: 9628a5d8a809c1343814c15d14e0a0a9, type: 2}
