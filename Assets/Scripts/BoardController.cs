@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class GridManager : MonoBehaviour
+public class BoardController : MonoBehaviour
 {
     private const int rowLength = 10;
     private const int colLength = 40;
