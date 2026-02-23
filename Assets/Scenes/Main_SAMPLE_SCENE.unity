@@ -397,11 +397,6 @@ Sprite:
   m_Bones: []
   m_ScriptableObjects: []
   m_SpriteID: 
---- !u!1839735485 &244328097 stripped
-Tilemap:
-  m_CorrespondingSourceObject: {fileID: 4348892139852604315, guid: 37f67ce8d5a304bb8956c346b4912817, type: 3}
-  m_PrefabInstance: {fileID: 2604347632724351678}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &411932971
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,12 +683,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   controller: {fileID: 0}
-  movePlate: {fileID: 1280170566012943072, guid: a3e48946ae8654f16a843107023c5ed5, type: 3}
+  movePlate: {fileID: 0}
   board_controller: {fileID: 0}
-  blue: {fileID: -2615874204119335, guid: bf10816ae08e54dbbba098304a87c718, type: 3}
-  pink: {fileID: -6920274672158514710, guid: a6f6bad646c9341a2b38b16ce773ade9, type: 3}
-  red: {fileID: 8166710274925509176, guid: 4ba4521f140af4a86842f87d5ac677e9, type: 3}
-  Circle: {fileID: -2413806693520163455, guid: 37072312f971c4e1786bab4ee3591e5a, type: 3}
+  blue: {fileID: 0}
+  pink: {fileID: 0}
+  red: {fileID: 0}
+  Circle: {fileID: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,10 +795,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe5b6b906337488da3c98248d5d9d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardController
-  Layer1_Walkable_Tiles: {fileID: 1216642516}
-  Layer2_Rooms: {fileID: 1509642134}
-  Layer3_Empty_Tiles: {fileID: 244328097}
-  Layer4_Doors: {fileID: 1629599365}
+  Layer1_Walkable_Tiles: {fileID: 0}
+  Layer2_Rooms: {fileID: 0}
+  Layer3_Empty_Tiles: {fileID: 0}
+  Layer4_Doors: {fileID: 0}
 --- !u!1 &1074027896
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,11 +979,6 @@ MonoBehaviour:
 --- !u!1 &1216642513 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7788404700377989271, guid: 37f67ce8d5a304bb8956c346b4912817, type: 3}
-  m_PrefabInstance: {fileID: 2604347632724351678}
-  m_PrefabAsset: {fileID: 0}
---- !u!1839735485 &1216642516 stripped
-Tilemap:
-  m_CorrespondingSourceObject: {fileID: 6952246807754417347, guid: 37f67ce8d5a304bb8956c346b4912817, type: 3}
   m_PrefabInstance: {fileID: 2604347632724351678}
   m_PrefabAsset: {fileID: 0}
 --- !u!19719996 &1216642517
@@ -1406,11 +1396,6 @@ Sprite:
   m_Bones: []
   m_ScriptableObjects: []
   m_SpriteID: 
---- !u!1839735485 &1509642134 stripped
-Tilemap:
-  m_CorrespondingSourceObject: {fileID: 5664785887512230176, guid: 37f67ce8d5a304bb8956c346b4912817, type: 3}
-  m_PrefabInstance: {fileID: 2604347632724351678}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1629599364
 GameObject:
   m_ObjectHideFlags: 0
