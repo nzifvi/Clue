@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using Unity.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isMovementKeyLocked = false;
     private const int stepSize = 8;
+       public GameObject GameController;
+    GameObject reference = null;
+    int matrixX;
+    int matrixY;
+    public bool isEnteringRoom = false;
 
     private int xPos;
     private int yPos;
@@ -68,4 +74,53 @@ public class PlayerMovement : MonoBehaviour
     {
         this.yPos = yPos;
     }
+     public void Start()
+    {
+        ///code for entering rooms?
+        if (isEnteringRoom)
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+        }
+    }
+    public void OnMouseUp()
+    {
+        GameController  = GameObject.FindGameObjectWithTag("GameController");
+
+        GameController.GetComponent<GameController>().SetPositionEmpty(reference.GetComponent<PlayerController>().getXPos(),
+        reference.GetComponent<PlayerController>().getYPos());
+        reference.GetComponent<PlayerController>().setXPos(matrixX);
+        reference.GetComponent<PlayerController>().setYPos(matrixY);
+        reference.GetComponent<PlayerController>().SetCoordinates();
+
+        GameController.GetComponent<GameController>().SetPosition(reference);
+        reference.GetComponent<PlayerController>().DestroyMovePlates();
+        }
+    
+
+      public void SetCoordinates(int x, int y)
+    {
+        matrixX = x;
+        matrixY = y;
+    }
+    public void SetReference(GameObject obj)
+    {
+        reference = obj;
+    }
+    public GameObject GetReference()
+
+    {
+        return reference;
+    }
 }
+
+
+ 
+
+
+   
+
+
+
+
+
+
