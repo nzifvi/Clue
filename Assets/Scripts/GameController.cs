@@ -1,16 +1,9 @@
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
 public class GameController : MonoBehaviour
 {
-
-
      public enum PlayerID
     {
         Player1,
@@ -35,7 +28,7 @@ public class GameController : MonoBehaviour
         player_count = 6;// set a number of players, [2,6]
         players = new GameObject[player_count];
         for(int i = 0; i < players.Length; i++)
-        { players[i] = Create("yellow",coordinates_start_x_positions[i], coordinates_start_y_positions[i]) ;
+        { players[i] = Create("player",coordinates_start_x_positions[i], coordinates_start_y_positions[i]) ;
             }
         for(int j = 0; j < players.Length; j++){SetPosition(players[j]);}
     }

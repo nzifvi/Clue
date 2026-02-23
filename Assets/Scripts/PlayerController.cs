@@ -1,8 +1,5 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using Unity.VisualScripting;
 using UnityEngine.Tilemaps;
 
 
@@ -28,15 +25,11 @@ public class PlayerController : MonoBehaviour
     private bool hasAccusationPhaseFinished = false;
     
     private PlayerMovement playerMovementObj;
-    void Awake()
-    {
-        playerMovementObj = GetComponent<PlayerMovement>();
-    }
+   // void Awake()
+   // {
+  //      playerMovementObj = GetComponent<PlayerMovement>();
+  //  }
     
-    void Update()
-    {
-        
-    }
 
     // when players is created
     public void Activate()
@@ -49,7 +42,7 @@ public class PlayerController : MonoBehaviour
         switch (this.name)
         {
             case "blue": this.GetComponent<SpriteRenderer>().sprite = blue; break;
-            case "yellow": this.GetComponent<SpriteRenderer>().sprite = Circle; break;
+            case "player": this.GetComponent<SpriteRenderer>().sprite = Circle; break;
             case "pink": this.GetComponent<SpriteRenderer>().sprite = pink; break;
             case "red": this.GetComponent<SpriteRenderer>().sprite = red; break;
         }
@@ -69,10 +62,10 @@ public class PlayerController : MonoBehaviour
         return hasMovementPhaseFinished && hasSuggestionPhaseFinished && hasAccusationPhaseFinished;
     }
     
-    public void addMovementAmount(int newMovementAmount)
-    {
-        movementAmount = newMovementAmount;
-    }
+   // public void addMovementAmount(int newMovementAmount)
+    //{
+  //      movementAmount = newMovementAmount;
+   // }
 
    // public void addMovementAmount(int newMovementAmount)
    // {
