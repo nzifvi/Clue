@@ -12,4 +12,4 @@ public class DiceRoller : MonoBehaviour {
   }
 }
 
-//Dice roll saved ro a tuple
+//Dice roll saved to a tuple

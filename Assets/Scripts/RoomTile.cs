@@ -4,7 +4,7 @@ using UnityEngine;
 public class RoomTile : Tile
 {
     public string RoomName;
-    public List<Tile> EntryPoints = new List<Tile>(); // Doors
+    public List<Tile> EntryPoints = new List<Tile>(); // Doors to this room
     public List<Player> OccupyingPlayers = new List<Player>();
     public List<Weapon> WeaponsInRoom = new List<Weapon>();
 
@@ -15,7 +15,8 @@ public class RoomTile : Tile
 
     public override bool IsWalkable()
     {
-        return true; // Multiple players can be in a room
+        // Multiple players can be in a room
+        return true;
     }
 
     public void EnterRoom(Player player)

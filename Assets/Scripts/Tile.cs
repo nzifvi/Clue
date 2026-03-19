@@ -1,28 +1,27 @@
 using UnityEngine;
 
-public class Tile : MonoBehaviour
+public abstract class Tile : MonoBehaviour
 {
     public enum TileType
     {
-        T,
-        TT,
-        WT
+        T,   // Traversable tile
+        TT,  // Traversable tile (doors)
+        WT,  // Wall tile
+        RT   // Room tile
     }
-    protected const int size = 200; // SIZE IN PIXELS, MIGHT NEED TO BE CHANGED TO SIZE IN UNITY?
+
     protected TileType tileType;
+
+    public int X { get; set; }
+    public int Y { get; set; }
+
+    public bool IsOccupied { get; set; } = false;
+
     public virtual void Start()
     {
         tileType = TileType.T;
     }
+    public abstract bool IsWalkable();
 
-    // Update is called once per frame
-    public virtual void Update()
-    {
-        
-    }
-
-    public TileType getTileType()
-    {
-        return tileType;
-    }
+    public TileType GetTileType() => tileType;
 }
