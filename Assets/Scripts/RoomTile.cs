@@ -19,6 +19,8 @@ public class RoomTile : Tile
         return true;
     }
 
+    // Add public RoomTile CurrentRoom; to Player.cs to track which room a player is in
+
     public void EnterRoom(Player player)
     {
         if (!OccupyingPlayers.Contains(player))
@@ -36,6 +38,13 @@ public class RoomTile : Tile
             player.CurrentRoom = null;
         }
     }
+
+    public class Weapon
+    {
+        //Replace with full weapon.cs
+    }
+
+
 
     public void AddWeapon(Weapon weapon) => WeaponsInRoom.Add(weapon);
     public void RemoveWeapon(Weapon weapon) => WeaponsInRoom.Remove(weapon);
