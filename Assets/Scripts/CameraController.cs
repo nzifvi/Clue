@@ -135,4 +135,24 @@ public class CameraController : MonoBehaviour
         );
         transform.position = camPos;
     }
+
+    public void showBoardView()
+    {
+        transform.position = new Vector3(
+            0, 800, 0
+        );
+        transform.rotation = Quaternion.Euler(
+            90, 0, 0
+        );
+    }
+
+    public bool isCameraMoving()
+    {
+        return isMoving;
+    }
+
+    public CameraMovementPackage getCameraMovementPackage(GameController.PlayerID playerID)
+    {
+        return playerPositions[playerID];
+    }
 }

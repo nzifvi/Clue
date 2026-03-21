@@ -1,0 +1,19 @@
+{
+	"name": "Scripts",
+	"rootNamespace": "",
+	"references": [
+		"Unity.InputSystem",
+		"Unity.Addressables",
+		"Unity.ResourceManager",
+		"Unity.Mathematics"
+	],
+	"includePlatforms": [],
+	"excludePlatforms": [],
+	"allowUnsafeCode": false,
+	"overrideReferences": false,
+	"precompiledReferences": [],
+	"autoReferenced": true,
+	"defineConstraints": [],
+	"versionDefines": [],
+	"noEngineReferences": false
+}
