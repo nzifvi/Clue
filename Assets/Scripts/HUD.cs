@@ -91,7 +91,5 @@ public class HUD : MonoBehaviour
             var img = chip.GetComponent<Image>();
             img.color = new Color(0.10f, 0.13f, 0.35f);
         }
-        ;
-        }
     }
 }
