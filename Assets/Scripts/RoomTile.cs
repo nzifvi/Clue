@@ -39,13 +39,6 @@ public class RoomTile : Tile
         }
     }
 
-    public class Weapon
-    {
-        //Replace with full weapon.cs
-    }
-
-
-
     public void AddWeapon(Weapon weapon) => WeaponsInRoom.Add(weapon);
     public void RemoveWeapon(Weapon weapon) => WeaponsInRoom.Remove(weapon);
 }

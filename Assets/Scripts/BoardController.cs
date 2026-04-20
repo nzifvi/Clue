@@ -12,7 +12,7 @@ public class BoardController : MonoBehaviour
     private const int ROWS = 10;
     private const int COLS = 40;
 
-    private Tile[,] grid = new Tile[ROWS, COLS];
+    private Tile[,] grid = new Tile[COLS, ROWS];
 
     // List to hold all the room tiles for easy access when we need to check if a tile is a room tile
     private List<RoomTile> rooms = new List<RoomTile>();
@@ -26,6 +26,7 @@ public class BoardController : MonoBehaviour
     }
 
     // Builds the grid by checking each tilemap for the presence of a tile at each co-ord
+    void BuildGrid()
     {
         for (int x = 0; x < COLS; x++)
         {
@@ -63,7 +64,7 @@ public class BoardController : MonoBehaviour
     T MakeTile<T>(int x, int y) where T : Tile
     {
         GameObject g = new GameObject("Tile_" + x + "_" + y);
-        g.transform.position = new Vector3(x * 20, y * 20, 0);
+        g.transform.position = new Vector3(x, 0.01f, y);
         T tile = g.AddComponent<T>();
         tile.X = x;
         tile.Y = y;
