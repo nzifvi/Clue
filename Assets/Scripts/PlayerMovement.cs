@@ -67,10 +67,10 @@ public class PlayerMovement : MonoBehaviour
             int moveX = 0;
             int moveZ = 0;
 
-            if (Mathf.Abs(intendedDirection.x) > Mathf.Abs(intendedDirection.y))
+            if (Mathf.Abs(intendedDirection.x) > Mathf.Abs(intendedDirection.z))
                 moveX = intendedDirection.x > 0 ? 1 : -1;
             else
-                moveZ = intendedDirection.y > 0 ? 1 : -1;
+                moveZ = intendedDirection.z > 0 ? 1 : -1;
 
             int targetX = xPos + moveX;
             int targetZ = yPos + moveZ;

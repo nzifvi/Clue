@@ -34,7 +34,9 @@ public class GameController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        players.AddRange(FindObjectsByType<Player>(FindObjectsSortMode.None));
+        players = FindObjectsByType<Player>(FindObjectsSortMode.None)
+            .OrderBy(p => p.ID)
+            .ToList();
         BuildDeck();
         DealCards();
         cameraController = FindObjectsByType<CameraController>(FindObjectsSortMode.None)[0];

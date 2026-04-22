@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public GameController.PlayerID ID;
+
     [SerializeField] private string playerName;
     public string PlayerName { get => playerName; set => playerName = value; }
 

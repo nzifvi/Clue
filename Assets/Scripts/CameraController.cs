@@ -30,8 +30,8 @@ public class CameraController : MonoBehaviour
 
     private bool isMoving = false;
 
-    private float radius = 10f;
-    private float height = 20f;
+    private float radius = 22.5f;
+    private float height = 22.5f;
     private float tangentialSpeed = 50.0f;
     private float currentYAngle = 0f;
 
@@ -40,27 +40,27 @@ public class CameraController : MonoBehaviour
     {
         playerPositions.Add(
             GameController.PlayerID.Player1,
-            new CameraMovementPackage(0, 20, 0, 25, 227, 0)
+            new CameraMovementPackage(23.5f, 20, 7.5f, 25, -90, 0)
         );
         playerPositions.Add(
             GameController.PlayerID.Player2,
-            new CameraMovementPackage(0, 20, 0, 25, 185, 0)
+            new CameraMovementPackage(16.5f, 20, 0.5f, 25, 0, 0)
         );
         playerPositions.Add(
             GameController.PlayerID.Player3,
-            new CameraMovementPackage(0, 20, 0, 25, 135, 0)
+            new CameraMovementPackage(0.5f, 20, 11.5f, 25, 90, 0)
         );
         playerPositions.Add(
             GameController.PlayerID.Player4,
-            new CameraMovementPackage(0, 20, 0, 25, 90, 0)
+            new CameraMovementPackage(0.5f, 20, 16.5f, 25, 90, 0)
         );
         playerPositions.Add(
             GameController.PlayerID.Player5,
-            new CameraMovementPackage(0, 20, 0, 25, 45, 0)
+            new CameraMovementPackage(5.5f, 20, 25.5f, 25, 180, 0)
         );
         playerPositions.Add(
             GameController.PlayerID.Player6,
-            new CameraMovementPackage(0, 20, 0, 25, 5, 0)
+            new CameraMovementPackage(18.5f, 20, 25.5f, 25, 180, 0)
         );
 
         currentPlayer = GameController.PlayerID.Player1;
@@ -122,7 +122,7 @@ public class CameraController : MonoBehaviour
     private void updateCameraPosition()
     {
         float theta = currentYAngle * Mathf.Deg2Rad;
-        Vector3 boardCentre = new Vector3(11.5f, 5f, 12.5f);
+        Vector3 boardCentre = new Vector3(12f, 5f, 13f);
         Vector3 camPos = new Vector3(
             boardCentre.x + radius * Mathf.Cos(theta),
             height,
@@ -135,7 +135,7 @@ public class CameraController : MonoBehaviour
     public void showBoardView()
     {
         transform.position = new Vector3(
-            11.5f, 35f, 12.5f
+            12f, 30f, 13f
         );
         transform.rotation = Quaternion.Euler(
             90, 0, 0
