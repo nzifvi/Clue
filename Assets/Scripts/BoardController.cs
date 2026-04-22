@@ -74,7 +74,7 @@ public class BoardController : MonoBehaviour
 
     public bool IsWalkable(int x, int y)
     {
-       /*Tile tile = GetTile(x, y);
+       Tile tile = GetTile(x, y);
        if (tile == null)
        {
             Debug.LogError($"MOVE BLOCKED: No tile exists in the grid at {x}, {y}. Check your Tilemap bounds!");
@@ -90,16 +90,16 @@ public class BoardController : MonoBehaviour
             Debug.LogWarning($"MOVE BLOCKED: {x}, {y} is a WallTile.");
             return false;
        }
-       return tile.IsWalkable();*/
+       return tile.IsWalkable();
 
 
-       Tile tile = GetTile(x, y);
+       /*Tile tile = GetTile(x, y);
        if (tile == null)
        {
            Debug.LogError($"No tile at {x}, {y}");
            return false;
        }
-       return true;
+       return true;*/
     }
 
     public Tile GetTile(int x, int y)
@@ -125,10 +125,32 @@ public class BoardController : MonoBehaviour
         }
 
         Tile destination = GetTile(toX, toY);
+        Tile currentTile = GetTile(fromX, fromY);
+
         if (destination == null || !destination.IsWalkable())
         {
             Debug.Log("Invalid move: destination is not walkable");
             return false;
+        }
+
+        if (destination is RoomTile && !(currentTile is RoomTile))
+        {
+             TraversableTile currTraversable = currentTile as TraversableTile;
+             if (currTraversable == null || currTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
+             {
+                 Debug.Log("Invalid move: You must stand on a Door Tile to enter a room!");
+                 return false;
+             }
+        }
+
+        if (currentTile is RoomTile && !(destination is RoomTile))
+        {
+             TraversableTile destTraversable = destination as TraversableTile;
+             if (destTraversable == null || destTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
+             {
+                 Debug.Log("Invalid move: You must exit the room through a Door Tile!");
+                 return false;
+             }
         }
 
         if (lastTile.ContainsKey(player) && lastTile[player] == destination)

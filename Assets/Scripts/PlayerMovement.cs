@@ -30,7 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
         xPos = Mathf.RoundToInt(transform.position.x);
         yPos = Mathf.RoundToInt(transform.position.z);
-        transform.position = new Vector3(xPos, transform.position.y, yPos);
+        transform.position = new Vector3(xPos + 0.5f, transform.position.y, yPos + 0.5f);
+
         if(board != null)
             board.SetTileOccupied(xPos, yPos, true);
 
@@ -86,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
 
             xPos = targetX;
             yPos = targetZ;
-            rb.MovePosition(new Vector3(targetX, rb.position.y, targetZ));
+            rb.MovePosition(new Vector3(targetX + 0.5f, rb.position.y, targetZ + 0.5f));
             movementAmount--;
 
             Debug.Log($"Moved to {targetX}, {targetZ}. Remaining: {movementAmount}");
