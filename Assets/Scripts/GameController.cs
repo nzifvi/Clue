@@ -10,7 +10,6 @@ public class GameController : MonoBehaviour
     public BoardController Board;
     public DiceManager DiceManager;
     private CameraController cameraController;
-    private HUD hud;
 
     private List<Card> deck = new List<Card>();
     private List<Card> envelope = new List<Card>();
@@ -30,8 +29,14 @@ public class GameController : MonoBehaviour
     public bool GameOver => gameOver;
     public IReadOnlyList<Card> Envelope => envelope.AsReadOnly();
 
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Header("The Murder Envelope")]
+    public string realMurderer;
+    public string realWeapon;
+    public string realRoom;
+
+    [Header("Special Clue Cards")]
+    public List<ClueCard> clueCardDeck = new List<ClueCard>();
+
     void Start()
     {
         players = FindObjectsByType<Player>(FindObjectsSortMode.None)
@@ -39,9 +44,10 @@ public class GameController : MonoBehaviour
             .ToList();
         BuildDeck();
         DealCards();
-        cameraController = FindObjectsByType<CameraController>(FindObjectsSortMode.None)[0];
-        hud = FindObjectsByType<HUD>(FindObjectsSortMode.None)[0];
+        DistributeWeapons();
 
+        cameraController = FindObjectsByType<CameraController>(FindObjectsSortMode.None)[0];
+        FindFirstObjectByType<DetectiveNotepad>().Build(players.Count, new string[] {"P1", "P2", "P3", "P4", "P5", "P6"});
         cameraController.moveCamera(GetCurrentPlayerID());
     }
 
@@ -62,9 +68,17 @@ public class GameController : MonoBehaviour
         var allWeapons = weapons.Select(n => new Card(n, CardType.WEAPON)).ToList();
         var allRooms = rooms.Select(n => new Card(n, CardType.ROOM)).ToList();
 
-        envelope.Add(DrawRandom(allSuspects));
-        envelope.Add(DrawRandom(allWeapons));
-        envelope.Add(DrawRandom(allRooms));
+        Card envSuspect = DrawRandom(allSuspects);
+        Card envWeapon = DrawRandom(allWeapons);
+        Card envRoom = DrawRandom(allRooms);
+
+        envelope.Add(envSuspect);
+        envelope.Add(envWeapon);
+        envelope.Add(envRoom);
+
+        realMurderer = envSuspect.Name;
+        realWeapon = envWeapon.Name;
+        realRoom = envRoom.Name;
 
         deck.AddRange(allSuspects);
         deck.AddRange(allWeapons);
@@ -80,6 +94,26 @@ public class GameController : MonoBehaviour
         {
             players[i % players.Count].Hand.AddCard(card);
             i++;
+        }
+    }
+
+    public void DistributeWeapons()
+    {
+        WeaponToken[] allWeaponTokens = FindObjectsByType<WeaponToken>(FindObjectsSortMode.None);
+        RoomTile[] allRooms = FindObjectsByType<RoomTile>(FindObjectsSortMode.None);
+
+        List<RoomTile> availableRooms = new List<RoomTile>(allRooms);
+
+        foreach (WeaponToken weapon in allWeaponTokens)
+        {
+            if (availableRooms.Count > 0)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, availableRooms.Count);
+                RoomTile assignedRoom = availableRooms[randomIndex];
+                weapon.transform.position = assignedRoom.transform.position;
+                weapon.CurrentRoom = assignedRoom;
+                availableRooms.RemoveAt(randomIndex);
+            }
         }
     }
 
@@ -100,8 +134,7 @@ public class GameController : MonoBehaviour
 
             Debug.Log($"{CurrentPlayer.PlayerName} rolled {die1}+{die2} = {total}");
 
-            if (hud != null)
-                hud.ShowDiceResult(die1, die2);
+            UIManager.Instance.OnDiceRolled();
         });
     }
 
@@ -114,6 +147,62 @@ public class GameController : MonoBehaviour
     {
         if (currentPhase != TurnPhase.MOVEMENT) return;
         currentPhase = TurnPhase.SUGGESTION;
+
+        if (CurrentPlayer.CurrentRoom == null)
+        {
+            // 25% chance to draw a special Clue Card in the hallway
+            if (UnityEngine.Random.value > 0.75f && clueCardDeck.Count > 0)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, clueCardDeck.Count);
+                ClueCard drawnCard = clueCardDeck[randomIndex];
+
+                UIManager.Instance.ShowClueCard(drawnCard.CardName, drawnCard.PromptText);
+                UIManager.Instance.AddLogMessage($"{CurrentPlayer.PlayerName} drew a Clue Card: {drawnCard.CardName}!");
+
+                UIManager.Instance.rollDiceButton.gameObject.SetActive(false);
+                UIManager.Instance.endTurnButton.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void ProcessSuggestion(string suspect, string weapon, string room)
+    {
+        Card suspectCard = new Card(suspect, CardType.SUSPECT);
+        Card weaponCard = new Card(weapon, CardType.WEAPON);
+        Card roomCard = new Card(room, CardType.ROOM);
+
+        Suggestion suggestion = new Suggestion(CurrentPlayer, suspectCard, weaponCard, roomCard);
+
+        UIManager.Instance.AddLogMessage($"{CurrentPlayer.PlayerName} SUGGESTS the crime was committed by {suspect} in the {room} with the {weapon}.");
+
+        RoomTile currentRoom = CurrentPlayer.CurrentRoom;
+        if (currentRoom != null)
+        {
+            Player accusedPlayer = players.Find(p => p.PlayerName == suspect);
+            if (accusedPlayer != null && accusedPlayer != CurrentPlayer)
+            {
+                accusedPlayer.GetComponent<Rigidbody>().isKinematic = true;
+                accusedPlayer.transform.position = currentRoom.transform.position;
+                accusedPlayer.GetComponent<Rigidbody>().isKinematic = false;
+                UIManager.Instance.AddLogMessage($"{accusedPlayer.PlayerName} was summoned to the {currentRoom.gameObject.name}!");
+            }
+
+            WeaponToken[] allWeapons = FindObjectsByType<WeaponToken>(FindObjectsSortMode.None);
+            WeaponToken accusedWeapon = System.Array.Find(allWeapons, w => w.WeaponName == weapon);
+
+            if (accusedWeapon != null)
+            {
+                accusedWeapon.CurrentRoom = currentRoom;
+                accusedWeapon.transform.position = currentRoom.transform.position + new Vector3(-1f, 0.5f, -1f);
+            }
+        }
+
+        Card disproof = ProcessSuggestion(suggestion);
+
+        if (disproof != null)
+            UIManager.Instance.AddLogMessage($"The suggestion was DISPROVED! (A card was shown)");
+        else
+            UIManager.Instance.AddLogMessage($"No one could disprove the suggestion!");
     }
 
     public Card ProcessSuggestion(Suggestion suggestion)
@@ -147,37 +236,46 @@ public class GameController : MonoBehaviour
         return null;
     }
 
-    public bool ProcessAccusation(Accusation accusation)
+    public void ProcessAccusation(string suspect, string weapon, string room)
     {
-        if (currentPhase != TurnPhase.ACCUSATION)
+        if (eliminated.Contains(CurrentPlayer))
         {
-            Debug.LogWarning("Not in accusation phase");
-            return false;
+            UIManager.Instance.AddLogMessage($"{CurrentPlayer.PlayerName} is already eliminated and cannot accuse!");
+            return;
         }
+
+        Card suspectCard = new Card(suspect, CardType.SUSPECT);
+        Card weaponCard = new Card(weapon, CardType.WEAPON);
+        Card roomCard = new Card(room, CardType.ROOM);
+
+        Accusation accusation = new Accusation(CurrentPlayer, suspectCard, weaponCard, roomCard);
+        UIManager.Instance.AddLogMessage($"{CurrentPlayer.PlayerName} ACCUSES {suspect} in the {room} with the {weapon}!");
 
         bool correct = CheckAccusation(accusation);
 
         if (correct)
         {
+            UIManager.Instance.AddLogMessage($"*** {CurrentPlayer.PlayerName} WINS! The murder is solved! ***");
             Debug.Log($"{accusation.SuggestingPlayer.PlayerName} wins!");
             gameOver = true;
         }
         else
         {
+            UIManager.Instance.AddLogMessage($"{CurrentPlayer.PlayerName} was WRONG and is eliminated!");
             Debug.Log($"{accusation.SuggestingPlayer.PlayerName} was wrong and is eliminated");
+
             eliminated.Add(accusation.SuggestingPlayer);
 
             if (players.Count - eliminated.Count <= 1)
             {
                 Player lastStanding = players.First(p => !eliminated.Contains(p));
-                Debug.Log($"{lastStanding.PlayerName} wins by elimination!");
+                UIManager.Instance.AddLogMessage($"{lastStanding.PlayerName} wins by elimination!");
                 gameOver = true;
             }
         }
 
         currentPhase = TurnPhase.END;
         AdvanceTurn();
-        return correct;
     }
 
     public void SkipAccusation()
@@ -187,8 +285,10 @@ public class GameController : MonoBehaviour
         AdvanceTurn();
     }
 
-    private void AdvanceTurn()
+    public void AdvanceTurn()
     {
+        Debug.Log("1. Advance Turn Button Clicked!");
+
         if (gameOver) return;
 
         for (int i = 0; i < players.Count; i++)
@@ -199,17 +299,35 @@ public class GameController : MonoBehaviour
         }
 
         currentPhase = TurnPhase.ROLL;
-        Debug.Log($"It is now {CurrentPlayer.PlayerName}'s turn");
+        Debug.Log($"2. It is now {CurrentPlayer.PlayerName}'s turn.");
+
+        if (UIManager.Instance != null)
+        {
+            Debug.Log("3. UIManager found. Showing Pass Device Screen.");
+            UIManager.Instance.ShowPassDeviceScreen(CurrentPlayer.PlayerName);
+        }
+        else
+        {
+            Debug.LogError("CRITICAL: UIManager.Instance is NULL! The UIManager script is missing or its Awake() method didn't run.");
+        }
 
         if (cameraController != null)
+        {
+            Debug.Log("4. CameraController found. Moving camera.");
             cameraController.moveCamera(GetCurrentPlayerID());
+        }
+        else
+        {
+            Debug.LogError("CRITICAL: CameraController is not assigned in the GameController Inspector!");
+        }
     }
 
     public bool CheckAccusation(Accusation accusation)
     {
-        bool suspectMatch = envelope.Any(c => c == accusation.Suspect);
-        bool weaponMatch = envelope.Any(c => c == accusation.Weapon);
-        bool roomMatch = envelope.Any(c => c == accusation.Room);
+        bool suspectMatch = envelope.Any(c => c.Name == accusation.Suspect.Name);
+        bool weaponMatch = envelope.Any(c => c.Name == accusation.Weapon.Name);
+        bool roomMatch = envelope.Any(c => c.Name == accusation.Room.Name);
+
         return suspectMatch && weaponMatch && roomMatch;
     }
 

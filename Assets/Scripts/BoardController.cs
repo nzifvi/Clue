@@ -120,39 +120,43 @@ public class BoardController : MonoBehaviour
         bool isOneStep = (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
         if (!isOneStep)
         {
-            Debug.Log("Invalid move: must move exactly one step in a cardinal direction");
+            Debug.Log("Invalid move: must move exactly one cardinal step.");
             return false;
         }
 
         Tile destination = GetTile(toX, toY);
         Tile currentTile = GetTile(fromX, fromY);
 
-        if (destination == null || !destination.IsWalkable())
+        // 1. Check if trying to walk into an empty void or a WallTile
+        if (destination == null || destination is WallTile)
         {
-            Debug.Log("Invalid move: destination is not walkable");
+            Debug.Log("Invalid move: Hit a wall or edge of board!");
             return false;
         }
 
+        // 2. ENTERING A ROOM: If destination is yellow Room, current MUST be red Door
         if (destination is RoomTile && !(currentTile is RoomTile))
         {
-             TraversableTile currTraversable = currentTile as TraversableTile;
-             if (currTraversable == null || currTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
-             {
-                 Debug.Log("Invalid move: You must stand on a Door Tile to enter a room!");
-                 return false;
-             }
+            TraversableTile currTraversable = currentTile as TraversableTile;
+            if (currTraversable == null || currTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
+            {
+                Debug.Log("Invalid move: You must stand on a Red Door Tile to enter the room!");
+                return false;
+            }
         }
 
+        // 3. LEAVING A ROOM: If current is yellow Room, destination MUST be red Door
         if (currentTile is RoomTile && !(destination is RoomTile))
         {
-             TraversableTile destTraversable = destination as TraversableTile;
-             if (destTraversable == null || destTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
-             {
-                 Debug.Log("Invalid move: You must exit the room through a Door Tile!");
-                 return false;
-             }
+            TraversableTile destTraversable = destination as TraversableTile;
+            if (destTraversable == null || destTraversable.GetTTType() != TraversableTile.TTType.DOOR_TT)
+            {
+                Debug.Log("Invalid move: You must exit the room through a Red Door Tile!");
+                return false;
+            }
         }
 
+        // 4. Prevent backtracking
         if (lastTile.ContainsKey(player) && lastTile[player] == destination)
         {
             Debug.Log("Invalid move: cannot move back to the previous tile");
@@ -192,8 +196,13 @@ public class BoardController : MonoBehaviour
         if (player.CurrentRoom != null)
         {
             player.CurrentRoom.LeaveRoom(player);
-            newRoom.EnterRoom(player);
+            if (UIManager.Instance != null)
+                UIManager.Instance.AddLogMessage($"{player.PlayerName} left the {player.CurrentRoom.gameObject.name}.");
         }
+        newRoom.EnterRoom(player);
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.AddLogMessage($"{player.PlayerName} entered the {newRoom.gameObject.name}.");
     }
 
     //Change TT to Occupied/unoccupied

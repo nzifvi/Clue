@@ -34,6 +34,11 @@ public class CameraController : MonoBehaviour
     private float height = 22.5f;
     private float tangentialSpeed = 50.0f;
     private float currentYAngle = 0f;
+    private bool isBirdseye = false;
+    private Transform currentPlayerTarget;
+    public Vector3 birdseyePosition = new Vector3(12f, 30f, 13f);
+    public Vector3 birdseyeRotation = new Vector3(90, 0, 0);
+
 
 
     void Start()
@@ -93,17 +98,15 @@ public class CameraController : MonoBehaviour
 
         if (Keyboard.current.bKey.wasPressedThisFrame)
         {
-            showBoardView();
-            isMoving = false;
+            ToggleBirdseyeView(!isBirdseye);
         }
 
-        if (isMoving)
+        if (isMoving && !isBirdseye)
         {
             float targetYAngle = playerPositions[currentPlayer].yAngle;
             currentYAngle = Mathf.MoveTowardsAngle(currentYAngle, targetYAngle, tangentialSpeed * Time.deltaTime );
 
             updateCameraPosition();
-
 
             if (Math.Abs(Mathf.DeltaAngle(currentYAngle, targetYAngle)) < 0.01f)
             {
@@ -115,8 +118,11 @@ public class CameraController : MonoBehaviour
 
     public void moveCamera(GameController.PlayerID playerID)
     {
-        currentPlayer = playerID;
-        isMoving = true;
+        if (!isBirdseye)
+        {
+            currentPlayer = playerID;
+            isMoving = true;
+        }
     }
 
     private void updateCameraPosition()
@@ -132,14 +138,22 @@ public class CameraController : MonoBehaviour
         transform.LookAt(boardCentre);
     }
 
-    public void showBoardView()
+    public void ToggleBirdseyeView(bool active)
     {
-        transform.position = new Vector3(
-            12f, 30f, 13f
-        );
-        transform.rotation = Quaternion.Euler(
-            90, 0, 0
-        );
+        isBirdseye = active;
+        isMoving = false; // Stop any current rotation animation
+
+        if (isBirdseye)
+        {
+            transform.position = birdseyePosition;
+            transform.rotation = Quaternion.Euler(birdseyeRotation);
+        }
+        else
+        {
+            // Snap back to current player's angle
+            currentYAngle = playerPositions[currentPlayer].yAngle;
+            updateCameraPosition();
+        }
     }
 
     public bool isCameraMoving()

@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
 
             Debug.Log($"Trying to move to: {targetX}, {targetZ}");
 
-            if (board != null && !board.IsWalkable(targetX, targetZ))
+            if (board != null && !board.IsValidMove(player, targetX, targetZ))
             {
                 Debug.Log($"Blocked at {targetX}, {targetZ}");
                 isMovementKeyLocked = false;
@@ -90,10 +90,25 @@ public class PlayerMovement : MonoBehaviour
             rb.MovePosition(new Vector3(targetX + 0.5f, rb.position.y, targetZ + 0.5f));
             movementAmount--;
 
+            TraversableTile currentTile = board.GetTile(targetX, targetZ) as TraversableTile;
+            if (currentTile != null && currentTile.GetTTType() == TraversableTile.TTType.DOOR_TT)
+            {
+                movementAmount = 0;
+                UIManager.Instance.ShowDoorPrompt("the Room");
+            }
+
             Debug.Log($"Moved to {targetX}, {targetZ}. Remaining: {movementAmount}");
 
             if (board != null && player != null)
                 board.OnPlayerMoved(player, xPos, yPos);
+
+            if (board.GetTile(targetX, targetZ) is RoomTile)
+            {
+                Debug.Log($"Player {player.PlayerName} entered a room! Movement phase ends immediately.");
+                UIManager.Instance.AddLogMessage($"{player.PlayerName} entered the Room.");
+                movementAmount = 0;
+
+            }
 
             if (movementAmount <= 0)
                 gameController.OnMovementFinished();
@@ -101,6 +116,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void SetMovementAmount(int amount) => movementAmount = amount;
+    public int MovesRemaining => movementAmount;
 
     public int getXPos()
     {

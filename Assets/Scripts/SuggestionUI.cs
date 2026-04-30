@@ -6,7 +6,6 @@ public class SuggestionUI : MonoBehaviour
 {
     public GameController gameController;
 
-    public GameObject suggestionPanel;
     public TMP_Dropdown suspectDropdown;
     public TMP_Dropdown weaponDropdown;
     public TMP_Dropdown roomDropdown;
@@ -24,7 +23,7 @@ public class SuggestionUI : MonoBehaviour
         weaponDropdown.ClearOptions();
         weaponDropdown.AddOptions(new System.Collections.Generic.List<string>
         {
-            "Candlestick", "Knife", "Wrench"
+            "Candlestick", "Dagger", "Wrench", "Rope", "Revolver", "Lead Pipe"
         });
 
         roomDropdown.ClearOptions();
@@ -33,19 +32,6 @@ public class SuggestionUI : MonoBehaviour
             "Kitchen", "Ballroom", "Conservatory", "Billiard Room",
             "Library", "Study", "Hall", "Lounge", "Dining Room"
         });
-
-        suggestionPanel.SetActive(false);
-    }
-
-    public void ShowSuggestionPanel()
-    {
-        suggestionPanel.SetActive(true);
-        resultText.text = "";
-    }
-
-    public void HideSuggestionPanel()
-    {
-        suggestionPanel.SetActive(false);
     }
 
     public void OnSubmitSuggestion()
@@ -64,13 +50,33 @@ public class SuggestionUI : MonoBehaviour
         else
             resultText.text = "No one could disprove your suggestion!";
 
-        Invoke(nameof(HideSuggestionPanel), 3f);
+        GameObject accusedPlayerObj = GameObject.Find(suspect.Name);
+        GameObject roomObj = GameObject.Find(room.Name);
+
+        if(accusedPlayerObj != null && roomObj != null)
+         {
+             accusedPlayerObj.transform.position = roomObj.transform.position + new Vector3(0, 1, 0);
+         }
+
+        GameObject weaponObj = GameObject.Find(weapon.Name);
+        if(weaponObj != null && roomObj != null)
+        {
+           weaponObj.transform.position = roomObj.transform.position + new Vector3(0, 0.5f, 0);
+        }
+
+        Invoke(nameof(HidePanel), 3f);
     }
 
     public void OnSkipSuggestion()
     {
         gameController.OnMovementFinished();
-        HideSuggestionPanel();
         gameController.SkipAccusation();
+        HidePanel();
     }
+    public void HidePanel()
+    {
+        UIManager.Instance.CloseActionMenu();
+    }
+
+
 }

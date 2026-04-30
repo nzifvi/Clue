@@ -15,11 +15,11 @@ public class TraversableTile : Tile
     public override void Start()
     {
         tileType = TileType.TT;
-        sprite = GetComponent<SpriteRenderer>().sprite;
+        //sprite = GetComponent<SpriteRenderer>().sprite;
 
         // Load a test sprite (to be replaced)
-        AsyncOperationHandle<Sprite> handle = Addressables.LoadAssetAsync<Sprite>(".../Assets/Textures/Test/TestPlayer.png");
-        handle.Completed += loadSpritesWhenReady;
+        //AsyncOperationHandle<Sprite> handle = Addressables.LoadAssetAsync<Sprite>(".../Assets/Textures/Test/TestPlayer.png");
+        //handle.Completed += loadSpritesWhenReady;
     }
 
     public override bool IsWalkable()

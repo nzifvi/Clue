@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     public Hand Hand { get; private set; } = new Hand();
     public RoomTile CurrentRoom { get; set; }
 
-
     
     private PlayerMovement playerMovementObj;
     void Awake()
@@ -40,4 +39,6 @@ public class Player : MonoBehaviour
         //playerMovementObj.SetMovementAmount(newMovementAmount);
         GetComponent<PlayerMovement>().SetMovementAmount(movementAmount);
     }
+
+    public int MovesRemaining => movementAmount;
 }
