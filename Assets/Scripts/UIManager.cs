@@ -71,6 +71,7 @@ public class UIManager : MonoBehaviour
     public void OnStartTurnClicked()
     {
         Debug.Log("Start Turn Clicked!");
+        notepadPanel.SetActive(false);
         passDevicePanel.SetActive(false);
         mainHudPanel.SetActive(true);
 

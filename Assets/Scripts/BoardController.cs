@@ -190,22 +190,38 @@ public class BoardController : MonoBehaviour
         return GetTile(x, y) as RoomTile;
     }
 
-    // Move the player to the new room
     public void MovePlayerToRoom(Player player, RoomTile newRoom)
     {
+        if (player == null)
+        {
+            Debug.LogError("MovePlayerToRoom Failed: The player reference is missing!");
+            return;
+        }
+        if (newRoom == null)
+        {
+            Debug.LogError($"MovePlayerToRoom Failed: The room reference is missing! (Tried moving {player.PlayerName})");
+            return;
+        }
+
         if (player.CurrentRoom != null)
         {
             player.CurrentRoom.LeaveRoom(player);
-            if (UIManager.Instance != null)
+            if (UIManager.Instance != null && player.CurrentRoom.gameObject != null)
+            {
                 UIManager.Instance.AddLogMessage($"{player.PlayerName} left the {player.CurrentRoom.gameObject.name}.");
+            }
         }
+
+        player.CurrentRoom = newRoom;
+
         newRoom.EnterRoom(player);
 
-        if (UIManager.Instance != null)
+        if (UIManager.Instance != null && newRoom.gameObject != null)
+        {
             UIManager.Instance.AddLogMessage($"{player.PlayerName} entered the {newRoom.gameObject.name}.");
+        }
     }
 
-    //Change TT to Occupied/unoccupied
     public void SetTileOccupied(int x, int y, bool occupied)
     {
         Tile tile = GetTile(x, y);

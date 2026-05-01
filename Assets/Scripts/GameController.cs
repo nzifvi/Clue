@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public BoardController Board;
     public DiceManager DiceManager;
     private CameraController cameraController;
+    private GameLogic gameLogic;
 
     private List<Card> deck = new List<Card>();
     private List<Card> envelope = new List<Card>();
@@ -29,6 +30,9 @@ public class GameController : MonoBehaviour
     public bool GameOver => gameOver;
     public IReadOnlyList<Card> Envelope => envelope.AsReadOnly();
 
+    [Header("Winner Controller")]
+    public WinnerPanelUI winnerPanel;
+
     [Header("The Murder Envelope")]
     public string realMurderer;
     public string realWeapon;
@@ -39,15 +43,40 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        int selectedPlayerCount = PlayerPrefs.GetInt("PlayerCount", 6);
+
         players = FindObjectsByType<Player>(FindObjectsSortMode.None)
             .OrderBy(p => p.ID)
             .ToList();
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (i >= selectedPlayerCount)
+            {
+                players[i].gameObject.SetActive(false);
+            }
+        }
+
+        if (players.Count > selectedPlayerCount)
+        {
+            players.RemoveRange(selectedPlayerCount, players.Count - selectedPlayerCount);
+        }
+
+        gameLogic = new GameLogic();
+        gameLogic.BuildDeck();
         BuildDeck();
         DealCards();
+
         DistributeWeapons();
 
         cameraController = FindObjectsByType<CameraController>(FindObjectsSortMode.None)[0];
-        FindFirstObjectByType<DetectiveNotepad>().Build(players.Count, new string[] {"P1", "P2", "P3", "P4", "P5", "P6"});
+
+        string[] activePlayerNames = new string[players.Count];
+        for(int i = 0; i < players.Count; i++) {
+            activePlayerNames[i] = players[i].PlayerName;
+        }
+
+        FindFirstObjectByType<DetectiveNotepad>().Build(players.Count, activePlayerNames);
         cameraController.moveCamera(GetCurrentPlayerID());
     }
 
@@ -56,15 +85,17 @@ public class GameController : MonoBehaviour
         deck.Clear();
         envelope.Clear();
 
-        var suspects = new[] { "Miss Scarlett", "Colonel Mustard", "Mrs White",
-                               "Reverend Green", "Mrs Peacock", "Professor Plum" };
+        List<Card> allSuspects = new List<Card>();
 
-        var weapons = new[] { "Candlestick", "Knife", "Wrench" };
+        var weapons = new[] { "Candlestick", "Dagger", "Wrench", "Lead Pipe", "Revolver", "Rope" };
 
         var rooms = new[] { "Kitchen", "Ballroom", "Conservatory", "Billiard Room",
                             "Library", "Study", "Hall", "Lounge", "Dining Room" };
 
-        var allSuspects = suspects.Select(n => new Card(n, CardType.SUSPECT)).ToList();
+        foreach (Player p in players)
+        {
+            allSuspects.Add(new Card(p.PlayerName, CardType.SUSPECT));
+        }
         var allWeapons = weapons.Select(n => new Card(n, CardType.WEAPON)).ToList();
         var allRooms = rooms.Select(n => new Card(n, CardType.ROOM)).ToList();
 
@@ -184,6 +215,8 @@ public class GameController : MonoBehaviour
                 accusedPlayer.GetComponent<Rigidbody>().isKinematic = true;
                 accusedPlayer.transform.position = currentRoom.transform.position;
                 accusedPlayer.GetComponent<Rigidbody>().isKinematic = false;
+                accusedPlayer.CurrentRoom = currentRoom;
+                Board.MovePlayerToRoom(accusedPlayer, currentRoom);
                 UIManager.Instance.AddLogMessage($"{accusedPlayer.PlayerName} was summoned to the {currentRoom.gameObject.name}!");
             }
 
@@ -192,8 +225,8 @@ public class GameController : MonoBehaviour
 
             if (accusedWeapon != null)
             {
-                accusedWeapon.CurrentRoom = currentRoom;
                 accusedWeapon.transform.position = currentRoom.transform.position + new Vector3(-1f, 0.5f, -1f);
+                accusedWeapon.CurrentRoom = currentRoom;
             }
         }
 
@@ -329,6 +362,21 @@ public class GameController : MonoBehaviour
         bool roomMatch = envelope.Any(c => c.Name == accusation.Room.Name);
 
         return suspectMatch && weaponMatch && roomMatch;
+    }
+
+    public void MakeAccusation(Player player, Card suspect, Card weapon, Card room)
+    {
+        bool isCorrect = gameLogic.CheckAccusation(suspect, weapon, room);
+
+        if (isCorrect)
+        {
+            winnerPanel.ShowWinner(player, suspect, weapon, room);
+            UIManager.Instance.AddLogMessage($"{player.PlayerName} won the game!");
+        }
+        else
+        {
+            UIManager.Instance.AddLogMessage($"{player.PlayerName} made a false accusation and is out!");
+        }
     }
 
     private Card DrawRandom(List<Card> source)

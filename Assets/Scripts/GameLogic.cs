@@ -22,7 +22,7 @@ public class GameLogic
         var suspects = new[] { "Miss Scarlett","Colonel Mustard","Mrs White",
                                "Reverend Green","Mrs Peacock","Professor Plum" }
                        .Select(n => new Card(n, CardType.SUSPECT)).ToList();
-        var weapons  = new[] { "Candlestick","Knife","Lead Pipe",
+        var weapons  = new[] { "Candlestick","Dagger","Lead Pipe",
                                "Revolver","Rope","Wrench" }
                        .Select(n => new Card(n, CardType.WEAPON)).ToList();
         var rooms    = new[] { "Kitchen","Ballroom","Conservatory","Billiard Room",
